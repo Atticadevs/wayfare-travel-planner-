@@ -2,39 +2,21 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
-  addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, startOfMonth, startOfWeek,
+  addMonths, format, isSameDay, isSameMonth, startOfMonth,
 } from 'date-fns'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { tripColor } from '../../lib/colors'
 import { parseDate, toISODate } from '../../lib/dates'
 import { ease } from '../../lib/motion'
+import { getMonthWeeks, weekBars } from '../../lib/calendar'
 import { cn } from '../../lib/cn'
 import { getDayAgenda } from '../../store/selectors'
 import { itineraryStatuses } from '../../lib/categories'
 import { ChartCard } from '../charts/ChartCard'
 import { Button } from '../ui/Button'
 
-const weekOptions = { weekStartsOn: 1 }
 const LANE_HEIGHT = 5
 const MAX_LANES = 3
-
-/** Splits a week into trip bars: [{ trip, startCol, endCol, lane }] using greedy lane packing. */
-function weekBars(week, trips) {
-  const first = toISODate(week[0])
-  const last = toISODate(week[6])
-  const laneEnds = []
-  return trips
-    .filter((t) => t.startDate <= last && t.endDate >= first)
-    .sort((a, b) => a.startDate.localeCompare(b.startDate))
-    .map((trip) => {
-      const startCol = Math.max(0, week.findIndex((d) => toISODate(d) >= trip.startDate))
-      const endIndex = week.findLastIndex((d) => toISODate(d) <= trip.endDate)
-      const lane = laneEnds.findIndex((end) => end < startCol)
-      const useLane = lane === -1 ? laneEnds.length : lane
-      laneEnds[useLane] = endIndex
-      return { trip, startCol, endCol: endIndex, lane: useLane }
-    })
-}
 
 /** Month grid with trip ranges as coloured bars. Click a day to see its trips, bookings and plans. */
 export function MiniCalendar({ trips, bookings, itinerary }) {
@@ -42,10 +24,7 @@ export function MiniCalendar({ trips, bookings, itinerary }) {
   const [selected, setSelected] = useState(() => toISODate(new Date()))
 
   const visibleTrips = useMemo(() => trips.filter((t) => t.status !== 'cancelled'), [trips])
-  const weeks = useMemo(() => {
-    const days = eachDayOfInterval({ start: startOfWeek(startOfMonth(month), weekOptions), end: endOfWeek(endOfMonth(month), weekOptions) })
-    return Array.from({ length: days.length / 7 }, (_, i) => days.slice(i * 7, i * 7 + 7))
-  }, [month])
+  const weeks = useMemo(() => getMonthWeeks(month), [month])
   const agenda = useMemo(() => getDayAgenda(selected, visibleTrips, bookings, itinerary), [selected, visibleTrips, bookings, itinerary])
   const today = new Date()
 

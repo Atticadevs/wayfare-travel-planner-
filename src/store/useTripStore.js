@@ -48,6 +48,7 @@ export const useTripStore = create(
     (set, get) => ({
       schemaVersion: SCHEMA_VERSION,
       settings: defaultSettings,
+      recentConversions: [],
       ...emptyEntities,
 
       updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
@@ -120,6 +121,15 @@ export const useTripStore = create(
       resetPacking: (tripId) =>
         set((s) => ({ packing: s.packing.map((p) => (p.tripId === tripId ? { ...p, packed: false } : p)) })),
 
+      /** Remembers a conversion { amount, from, to }; newest first, no duplicates, max 6. */
+      addRecentConversion: (entry) =>
+        set((s) => ({
+          recentConversions: [
+            entry,
+            ...s.recentConversions.filter((c) => !(c.amount === entry.amount && c.from === entry.from && c.to === entry.to)),
+          ].slice(0, 6),
+        })),
+
       loadDemoData: () => set(createDemoData()),
 
       /** Replaces all entities and settings (used by import). */
@@ -129,7 +139,7 @@ export const useTripStore = create(
           settings: { ...defaultSettings, ...snapshot.settings },
         }),
 
-      resetAll: () => set({ ...emptyEntities, settings: defaultSettings }),
+      resetAll: () => set({ ...emptyEntities, settings: defaultSettings, recentConversions: [] }),
     }),
     {
       name: STORAGE_KEY,
@@ -141,7 +151,7 @@ export const useTripStore = create(
         ...persisted,
         settings: { ...current.settings, ...persisted?.settings },
       }),
-      partialize: (s) => ({ schemaVersion: s.schemaVersion, settings: s.settings, ...Object.fromEntries(entityKeys.map((k) => [k, s[k]])) }),
+      partialize: (s) => ({ schemaVersion: s.schemaVersion, settings: s.settings, recentConversions: s.recentConversions, ...Object.fromEntries(entityKeys.map((k) => [k, s[k]])) }),
     },
   ),
 )
