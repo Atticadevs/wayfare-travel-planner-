@@ -42,13 +42,13 @@ export const TripCard = forwardRef(function TripCard({ trip, status, view, actio
       transition={spring}
       aria-label={trip.title}
       className={cn(
-        'group relative overflow-hidden rounded-card bg-surface shadow-card-themed transition-shadow hover:shadow-lift',
+        'group relative rounded-card bg-surface shadow-card-themed transition-shadow focus-within:z-20 hover:shadow-lift',
         isList ? 'flex flex-col sm:flex-row' : 'flex flex-col',
         status === 'cancelled' && 'opacity-75',
       )}
     >
       <div
-        className={cn('relative shrink-0', isList ? 'h-28 sm:h-auto sm:w-48' : 'h-36')}
+        className={cn('relative shrink-0 rounded-t-card', isList ? 'h-28 sm:h-auto sm:w-48 sm:rounded-l-card sm:rounded-tr-none' : 'h-36')}
         style={{ background: coverBackground(trip.coverImage) }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" aria-hidden="true" />
@@ -74,15 +74,27 @@ export const TripCard = forwardRef(function TripCard({ trip, status, view, actio
               {trip.destination}, {trip.country}
             </p>
           </div>
-          <Dropdown
-            label={`Actions for ${trip.title}`}
-            items={menu}
-            trigger={(props) => (
-              <Button {...props} variant="ghost" size="sm" icon className="relative z-10">
-                <MoreHorizontal size={16} aria-hidden="true" />
-              </Button>
-            )}
-          />
+          <div className="flex shrink-0 items-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              icon
+              className="relative z-10 hover:text-danger-fg"
+              aria-label={`Delete ${trip.title}`}
+              onClick={() => actions.remove(trip)}
+            >
+              <Trash2 size={16} aria-hidden="true" />
+            </Button>
+            <Dropdown
+              label={`Actions for ${trip.title}`}
+              items={menu}
+              trigger={(props) => (
+                <Button {...props} variant="ghost" size="sm" icon className="relative z-10">
+                  <MoreHorizontal size={16} aria-hidden="true" />
+                </Button>
+              )}
+            />
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
