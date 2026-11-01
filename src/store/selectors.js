@@ -138,6 +138,52 @@ export function getDayAgenda(date, trips, bookings, itinerary) {
   }
 }
 
+/** Spend rows for several trips, every amount converted into `currency`. Rows carry their tripId. */
+export function getSpendRowsIn(trips, bookings, expenses, rates, currency) {
+  return trips.flatMap((trip) =>
+    getSpendRows(trip, bookings, expenses, rates).map((row) => ({
+      ...row,
+      tripId: trip.id,
+      converted: convert(row.converted, trip.budget.currency, currency, rates),
+    })),
+  )
+}
+
+/** Budget and spend per trip in `currency`, for cross-trip analytics. */
+export function getTripFinancials(trips, bookings, expenses, rates, currency, now = new Date()) {
+  return trips.map((trip) => {
+    const spend = getTripSpend(trip, bookings, expenses, rates)
+    return {
+      trip,
+      status: getTripStatus(trip, now),
+      budget: convert(trip.budget.amount, trip.budget.currency, currency, rates),
+      spent: convert(spend.total, trip.budget.currency, currency, rates),
+    }
+  })
+}
+
+/**
+ * Spend per calendar month, [{ key: 'yyyy-MM', amount }], filling gaps between the first and last month
+ * that have spend and keeping the most recent `limit` months.
+ */
+export function getSpendByMonth(rows, limit = 12) {
+  const totals = {}
+  rows.forEach((r) => {
+    const key = r.date.slice(0, 7)
+    totals[key] = (totals[key] ?? 0) + r.converted
+  })
+  const keys = Object.keys(totals).sort()
+  if (keys.length === 0) return []
+  const out = []
+  for (let cursor = parseDate(`${keys[0]}-01`); toMonthKey(cursor) <= keys[keys.length - 1]; cursor = addMonths(cursor, 1)) {
+    const key = toMonthKey(cursor)
+    out.push({ key, amount: totals[key] ?? 0 })
+  }
+  return out.slice(-limit)
+}
+
+const toMonthKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+
 /** Totals per expense category from getSpendRows output. */
 export function sumByCategory(rows) {
   return rows.reduce((acc, r) => ({ ...acc, [r.category]: (acc[r.category] ?? 0) + r.converted }), {})

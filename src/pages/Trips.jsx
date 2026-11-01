@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowDownUp, LayoutGrid, List, Map, Plus, Search, SearchX, Sparkles } from 'lucide-react'
+import { ChartCard } from '../components/charts/ChartCard'
+import { TimelineStrip } from '../components/charts/TimelineStrip'
 import { PageShell } from '../components/layout/PageShell'
 import { TripCard } from '../components/trips/TripCard'
 import { TripDrawer } from '../components/trips/TripDrawer'
@@ -50,6 +52,8 @@ export default function Trips() {
 
   const now = useMemo(() => new Date(), [])
   const counts = useMemo(() => countTripsByStatus(trips, now), [trips, now])
+
+  const timelineTrips = useMemo(() => trips.map((trip) => ({ trip, status: getTripStatus(trip, now) })), [trips, now])
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -129,6 +133,9 @@ export default function Trips() {
         </EmptyState>
       ) : (
         <>
+          <ChartCard title="Timeline" subtitle="Scroll or zoom to explore the year" className="mb-6">
+            <TimelineStrip trips={timelineTrips} now={now} />
+          </ChartCard>
           <div className="mb-6 flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative min-w-[12rem] flex-1 md:max-w-sm">
