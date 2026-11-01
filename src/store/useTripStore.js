@@ -59,6 +59,9 @@ export const useTripStore = create(
       ...crud(set, 'packing', 'PackingItem'),
       ...crud(set, 'notes', 'Note', { timestamps: true }),
 
+      /** Re-inserts a deleted record into one of the entity lists (undo). */
+      restore: (key, record) => set((s) => ({ [key]: [...s[key], record] })),
+
       /** Removes a trip and everything attached to it; returns a bundle for undo. */
       removeTrip: (id) => {
         const s = get()

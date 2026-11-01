@@ -68,7 +68,7 @@ export default function Trips() {
       toast('Trip updated')
     } else {
       const id = addTrip({ ...data, status: 'planned' })
-      toast('Trip created', { actionLabel: 'Add itinerary', onAction: () => navigate(`/trips/${id}?tab=itinerary`) })
+      toast('Trip created', { actionLabel: 'Add itinerary', onAction: () => navigate(`/trips/${id}?tab=itinerary&add=1`) })
     }
     closeDrawer()
   }

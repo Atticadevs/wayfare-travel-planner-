@@ -1,5 +1,6 @@
 import { isAfter, isBefore, startOfDay } from 'date-fns'
 import { daysFromNow, parseDate } from '../lib/dates'
+import { bookingExpenseCategory } from '../lib/categories'
 import { convert } from '../lib/money'
 
 /**
@@ -64,4 +65,45 @@ export function getItineraryProgress(items) {
 export function getPackingProgress(items) {
   const packed = items.filter((i) => i.packed).length
   return { packed, total: items.length, pct: items.length ? Math.round((packed / items.length) * 100) : 0 }
+}
+
+/**
+ * Spend rows for a trip in its budget currency: manual expenses plus non-cancelled
+ * bookings (flagged fromBooking). Booking costs are never duplicated as expenses.
+ */
+export function getSpendRows(trip, bookings, expenses, rates) {
+  const target = trip.budget.currency
+  const rows = []
+  bookings
+    .filter((b) => b.tripId === trip.id && b.status !== 'cancelled')
+    .forEach((b) =>
+      rows.push({
+        id: b.id,
+        title: b.title,
+        category: bookingExpenseCategory[b.type] ?? 'other',
+        date: b.startDateTime.slice(0, 10),
+        original: b.cost,
+        converted: convert(b.cost.amount, b.cost.currency, target, rates),
+        fromBooking: true,
+      }),
+    )
+  expenses
+    .filter((e) => e.tripId === trip.id)
+    .forEach((e) =>
+      rows.push({
+        id: e.id,
+        title: e.title,
+        category: e.category,
+        date: e.date,
+        original: { amount: e.amount, currency: e.currency },
+        converted: convert(e.amount, e.currency, target, rates),
+        fromBooking: false,
+      }),
+    )
+  return rows
+}
+
+/** Totals per expense category from getSpendRows output. */
+export function sumByCategory(rows) {
+  return rows.reduce((acc, r) => ({ ...acc, [r.category]: (acc[r.category] ?? 0) + r.converted }), {})
 }

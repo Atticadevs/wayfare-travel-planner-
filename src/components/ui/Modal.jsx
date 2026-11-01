@@ -3,10 +3,11 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { backdrop, modalPanel } from '../../lib/motion'
+import { cn } from '../../lib/cn'
 import { useFocusTrap } from '../../hooks/useFocusTrap'
 import { Button } from './Button'
 
-function ModalPanel({ title, onClose, children, footer }) {
+function ModalPanel({ title, onClose, children, footer, size = 'md' }) {
   const ref = useRef(null)
   const titleId = useId()
   useFocusTrap(ref, { onEscape: onClose })
@@ -20,7 +21,10 @@ function ModalPanel({ title, onClose, children, footer }) {
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="relative w-full max-w-md rounded-card bg-surface p-6 shadow-lift dark:border dark:border-border"
+        className={cn(
+          'relative max-h-[90vh] w-full overflow-y-auto rounded-card bg-surface p-6 shadow-lift dark:border dark:border-border',
+          size === 'lg' ? 'max-w-xl' : 'max-w-md',
+        )}
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <h2 id={titleId} className="text-xl font-bold">
@@ -37,7 +41,7 @@ function ModalPanel({ title, onClose, children, footer }) {
   )
 }
 
-/** Centered dialog. Esc and outside click close it; focus is trapped while open. */
+/** Centered dialog. Esc and outside click close it; focus is trapped while open. size: 'md' | 'lg'. */
 export function Modal({ open, ...props }) {
   return createPortal(<AnimatePresence>{open && <ModalPanel {...props} />}</AnimatePresence>, document.body)
 }
