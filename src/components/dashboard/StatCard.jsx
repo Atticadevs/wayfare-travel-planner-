@@ -14,7 +14,7 @@ const chipTones = {
 export function StatCard({ label, value, format = (n) => String(Math.round(n)), icon: Icon, tone = 'primary', caption, series }) {
   const animated = useCountUp(value)
   return (
-    <Card className="flex flex-col gap-3 !p-5">
+    <Card className="flex h-full flex-col justify-between gap-3 !p-5">
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-semibold text-muted">{label}</p>
         <span className={cn('grid h-9 w-9 place-items-center rounded-xl', chipTones[tone])}>
