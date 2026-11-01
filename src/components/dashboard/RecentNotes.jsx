@@ -15,7 +15,7 @@ export function RecentNotes({ notes, trips }) {
 
   return (
     <ChartCard title="Recent notes" subtitle="Pinned and latest" empty={recent.length === 0 && 'Notes you jot down on trips will show up here.'}>
-      <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {recent.map((note) => (
           <li key={note.id}>
             <Link

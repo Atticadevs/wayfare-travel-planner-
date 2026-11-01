@@ -126,11 +126,11 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="grid grid-cols-1 gap-5 md:grid-cols-6 xl:grid-cols-12 xl:gap-6">
-        <Widget className="md:col-span-3 xl:col-span-3">
+      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="grid grid-cols-1 gap-5 md:grid-cols-6 lg:grid-cols-12 lg:gap-6">
+        <Widget className="md:col-span-3 lg:col-span-3">
           <StatCard label="Upcoming trips" value={counts.upcoming} icon={CalendarClock} tone="info" caption={`${counts.ongoing} ongoing`} series={data.upcomingSeries} />
         </Widget>
-        <Widget className="md:col-span-3 xl:col-span-3">
+        <Widget className="md:col-span-3 lg:col-span-3">
           <StatCard
             label="Active budget"
             value={data.planned}
@@ -141,7 +141,7 @@ export default function Dashboard() {
             series={data.budgetSeries}
           />
         </Widget>
-        <Widget className="md:col-span-3 xl:col-span-3">
+        <Widget className="md:col-span-3 lg:col-span-3">
           <StatCard
             label="Days until next trip"
             value={daysAway}
@@ -150,44 +150,44 @@ export default function Dashboard() {
             caption={!next ? 'No trip planned' : nextStatus === 'ongoing' ? 'Happening now' : next.destination}
           />
         </Widget>
-        <Widget className="md:col-span-3 xl:col-span-3">
+        <Widget className="md:col-span-3 lg:col-span-3">
           <StatCard label="Trips completed" value={counts.completed} icon={CircleCheck} tone="success" caption={`of ${counts.total} trips`} series={data.completedSeries} />
         </Widget>
 
-        <Widget className="md:col-span-6 xl:col-span-8">
+        <Widget className="md:col-span-6 lg:col-span-8">
           {next ? (
             <NextTripHero trip={next} status={nextStatus} spent={data.nextSpent} />
           ) : (
             <ChartCard title="Next trip" empty="Nothing coming up. Plan your next adventure!" />
           )}
         </Widget>
-        <Widget className="md:col-span-6 xl:col-span-4">
+        <Widget className="md:col-span-6 lg:col-span-4">
           <ChartCard title="Trip status" subtitle="Tap a label to filter trips">
             <StatusRing counts={counts} />
           </ChartCard>
         </Widget>
 
-        <Widget className="md:col-span-3 xl:col-span-4">
+        <Widget className="md:col-span-3 lg:col-span-4">
           <UpcomingTrips trips={data.active} itinerary={itinerary} />
         </Widget>
-        <Widget className="md:col-span-3 xl:col-span-4">
+        <Widget className="md:col-span-3 lg:col-span-4">
           <MiniCalendar trips={trips} bookings={bookings} itinerary={itinerary} />
         </Widget>
-        <Widget className="md:col-span-6 xl:col-span-4">
+        <Widget className="md:col-span-6 lg:col-span-4">
           <ItineraryProgress itinerary={itinerary} now={now} />
         </Widget>
 
-        <Widget className="md:col-span-3 xl:col-span-4">
+        <Widget className="md:col-span-3 lg:col-span-4">
           <ConverterWidget presets={data.presets} />
         </Widget>
-        <Widget className="md:col-span-3 xl:col-span-4">
+        <Widget className="md:col-span-3 lg:col-span-4">
           <BudgetOverview planned={data.planned} spent={data.activeSpent} currency={base} tripCount={data.active.length} />
         </Widget>
-        <Widget className="md:col-span-6 xl:col-span-4">
+        <Widget className="md:col-span-6 lg:col-span-4">
           <PackingSnapshot trip={next} items={nextPacking} />
         </Widget>
 
-        <Widget className="md:col-span-6 xl:col-span-12">
+        <Widget className="md:col-span-6 lg:col-span-12">
           <RecentNotes notes={notes} trips={trips} />
         </Widget>
       </motion.div>

@@ -5,8 +5,8 @@ import { Ban, CalendarClock, CircleAlert, CircleCheck } from 'lucide-react'
 import { chartViewport, ease } from '../../lib/motion'
 import { cn } from '../../lib/cn'
 
-const SIZE = 180
-const STROKE = 16
+const SIZE = 150
+const STROKE = 14
 const RADIUS = (SIZE - STROKE * 1.6) / 2
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 const GAP = 6
@@ -36,7 +36,7 @@ export function StatusRing({ counts }) {
   const summary = `Trip status: ${arcs.map((a) => `${a.count} ${a.label.toLowerCase()}`).join(', ')}. ${total} trips in total.`
 
   return (
-    <div ref={ref} className="flex flex-col items-center gap-5 sm:flex-row sm:justify-center">
+    <div ref={ref} className="flex flex-col items-center gap-4">
       <div role="img" aria-label={summary} tabIndex={0} className="relative shrink-0" style={{ width: SIZE, height: SIZE }}>
         <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} aria-hidden="true">
           <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="rgb(var(--border))" strokeWidth={STROKE} />
@@ -61,13 +61,13 @@ export function StatusRing({ counts }) {
         </svg>
         <div className="pointer-events-none absolute inset-0 grid place-items-center text-center">
           <div>
-            <p className="font-heading text-3xl font-extrabold leading-none">{focused ? focused.count : total}</p>
+            <p className="font-heading text-2xl font-extrabold leading-none">{focused ? focused.count : total}</p>
             <p className="mt-1 text-xs text-muted">{focused ? `${focused.label} · ${Math.round(focused.share * 100)}%` : 'Total trips'}</p>
           </div>
         </div>
       </div>
 
-      <ul className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:grid-cols-1">
+      <ul className="grid w-full grid-cols-2 gap-2">
         {arcs.map((a) => (
           <li key={a.key}>
             <Link
