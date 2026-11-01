@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { MotionConfig } from 'framer-motion'
 import { Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
+import { CorruptionPrompt } from './components/layout/CorruptionPrompt'
 import { Skeleton } from './components/ui/Skeleton'
 import { ToastViewport } from './components/ui/Toast'
 import { useThemeSync } from './hooks/useTheme'
@@ -46,6 +47,7 @@ export default function App() {
         </Routes>
       </Suspense>
       <ToastViewport />
+      <CorruptionPrompt />
     </MotionConfig>
   )
 }
