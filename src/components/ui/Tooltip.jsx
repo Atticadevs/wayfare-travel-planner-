@@ -1,9 +1,10 @@
 import { useId, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { popover } from '../../lib/motion'
+import { cn } from '../../lib/cn'
 
 /** Wraps a single focusable child; shows `content` on hover and keyboard focus. */
-export function Tooltip({ content, children }) {
+export function Tooltip({ content, side = 'top', children }) {
   const id = useId()
   const [open, setOpen] = useState(false)
   return (
@@ -18,7 +19,7 @@ export function Tooltip({ content, children }) {
       {children}
       <AnimatePresence>
         {open && (
-          <span className="pointer-events-none absolute bottom-full left-1/2 z-40 mb-2 -translate-x-1/2">
+          <span className={cn('pointer-events-none absolute left-1/2 z-40 -translate-x-1/2', side === 'bottom' ? 'top-full mt-2' : 'bottom-full mb-2')}>
             <motion.span
               {...popover}
               id={id}

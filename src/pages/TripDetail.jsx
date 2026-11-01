@@ -73,7 +73,7 @@ export default function TripDetail() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] space-y-6 px-4 pb-24 pt-6 md:px-8 md:pb-12 md:pt-8">
+    <div className="mx-auto w-full max-w-[1400px] space-y-6 px-4 pb-12 pt-6 md:px-8 md:pt-8">
       <TripHeader
         trip={trip}
         status={status}

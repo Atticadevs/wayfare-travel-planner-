@@ -1,18 +1,22 @@
-import { NavLink } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Moon, Plane, Settings, Sun } from 'lucide-react'
+import { Menu, Plane, Settings, X } from 'lucide-react'
 import { navItems } from '../../lib/nav'
 import { spring } from '../../lib/motion'
 import { cn } from '../../lib/cn'
-import { useTheme } from '../../hooks/useTheme'
 import { useTripStore } from '../../store/useTripStore'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { Tooltip } from '../ui/Tooltip'
 
 export function Navbar() {
-  const { isDark, toggle } = useTheme()
   const userName = useTripStore((s) => s.settings.userName)
+  const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  // Close the menu after navigating.
+  useEffect(() => setOpen(false), [pathname])
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md">
@@ -54,12 +58,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Tooltip content={isDark ? 'Light mode' : 'Dark mode'}>
-            <Button variant="ghost" icon onClick={toggle} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
-              {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
-            </Button>
-          </Tooltip>
-          <Tooltip content="Settings">
+          <Tooltip content="Settings" side="bottom">
             <NavLink
               to="/settings"
               aria-label="Settings"
@@ -69,8 +68,43 @@ export function Navbar() {
             </NavLink>
           </Tooltip>
           <Avatar name={userName} className="ml-1" />
+          <Button
+            variant="ghost"
+            icon
+            className="md:hidden"
+            onClick={() => setOpen((o) => !o)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+          >
+            {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </Button>
         </div>
       </div>
+
+      {open && (
+        <nav id="mobile-menu" aria-label="Main" className="border-t border-border bg-bg px-4 py-2 md:hidden">
+          <ul>
+            {navItems.map(({ to, label, icon: Icon, end }) => (
+              <li key={to}>
+                <NavLink
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-3 rounded-control px-3 py-3 font-heading text-sm font-semibold transition-colors',
+                      isActive ? 'bg-primary/10 text-primary' : 'text-text hover:bg-primary/5',
+                    )
+                  }
+                >
+                  <Icon size={18} aria-hidden="true" />
+                  {label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
   )
 }

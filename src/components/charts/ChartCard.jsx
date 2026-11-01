@@ -5,7 +5,7 @@ import { cn } from '../../lib/cn'
 /** Widget wrapper: title, subtitle, optional action, skeleton while loading, message when empty. */
 export function ChartCard({ title, subtitle, action, loading = false, empty, className, children }) {
   return (
-    <Card className={cn('flex h-full flex-col', className)}>
+    <Card className={cn('flex h-full min-w-0 flex-col', className)}>
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <h2 className="text-base font-bold">{title}</h2>
@@ -18,7 +18,7 @@ export function ChartCard({ title, subtitle, action, loading = false, empty, cla
       ) : empty ? (
         <p className="grid flex-1 place-items-center rounded-control bg-surface-2 px-4 py-8 text-center text-sm text-muted">{empty}</p>
       ) : (
-        <div className="flex flex-1 flex-col">{children}</div>
+        <div className="flex min-w-0 flex-1 flex-col">{children}</div>
       )}
     </Card>
   )

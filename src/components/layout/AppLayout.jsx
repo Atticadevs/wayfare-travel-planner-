@@ -3,10 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useLocation, useOutlet } from 'react-router-dom'
 import { pageTransition } from '../../lib/motion'
 import { Navbar } from './Navbar'
-import { MobileTabBar } from './MobileTabBar'
 import { ErrorBoundary } from './ErrorBoundary'
 
-/** Navbar and tab bar stay mounted; only the page content transitions. */
+/** Navbar stays mounted; only the page content transitions. */
 export function AppLayout() {
   const { pathname } = useLocation()
   const main = useRef(null)
@@ -50,7 +49,6 @@ export function AppLayout() {
           <ErrorBoundary resetKey={pathname}>{outlet}</ErrorBoundary>
         </motion.main>
       </AnimatePresence>
-      <MobileTabBar />
     </>
   )
 }

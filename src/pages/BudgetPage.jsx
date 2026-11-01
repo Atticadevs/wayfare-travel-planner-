@@ -71,8 +71,8 @@ export default function BudgetPage() {
             </button>
           ))}
         </div>
-        <div className="ml-auto flex items-end gap-2">
-          <div className="w-56">
+        <div className="flex w-full items-end gap-2 sm:ml-auto sm:w-auto">
+          <div className="min-w-0 flex-1 sm:w-56 sm:flex-none">
             <DateRangePicker label="Date range" start={range.start} end={range.end} onChange={setRange} />
           </div>
           {range.start && (
@@ -83,35 +83,35 @@ export default function BudgetPage() {
         </div>
       </div>
 
-      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="grid gap-5 lg:grid-cols-6 xl:gap-6">
-        <motion.div variants={staggerItem} className="lg:col-span-2">
+      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="grid grid-cols-1 gap-5 lg:grid-cols-6 xl:gap-6">
+        <motion.div variants={staggerItem} className="min-w-0 lg:col-span-2">
           <StatCard label="Planned" value={planned} format={money} icon={Wallet} tone="primary" caption={`${filtered.length} trip${filtered.length === 1 ? '' : 's'}`} />
         </motion.div>
-        <motion.div variants={staggerItem} className="lg:col-span-2">
+        <motion.div variants={staggerItem} className="min-w-0 lg:col-span-2">
           <StatCard label="Spent" value={spent} format={money} icon={Receipt} tone="accent" caption={planned > 0 ? `${Math.round((spent / planned) * 100)}% of planned` : 'No budget set'} />
         </motion.div>
-        <motion.div variants={staggerItem} className="lg:col-span-2">
+        <motion.div variants={staggerItem} className="min-w-0 lg:col-span-2">
           <StatCard label="Remaining" value={planned - spent} format={money} icon={PiggyBank} tone="success" caption={planned - spent < 0 ? 'Over budget overall' : 'Still available'} />
         </motion.div>
 
-        <motion.div variants={staggerItem} className="lg:col-span-3">
+        <motion.div variants={staggerItem} className="min-w-0 lg:col-span-3">
           <ChartCard title="Spending by category" subtitle="Expenses and booking costs" empty={rows.length === 0 && 'No spending in this selection.'}>
             <CategoryCapsule totals={sumByCategory(rows)} currency={base} />
           </ChartCard>
         </motion.div>
-        <motion.div variants={staggerItem} className="lg:col-span-3">
+        <motion.div variants={staggerItem} className="min-w-0 lg:col-span-3">
           <ChartCard title="Budget vs actual" subtitle="Per trip" empty={filtered.length === 0 && 'No trips match these filters.'}>
             <BudgetVsActual rows={[...filtered].sort((a, b) => a.trip.startDate.localeCompare(b.trip.startDate))} currency={base} />
           </ChartCard>
         </motion.div>
 
-        <motion.div variants={staggerItem} className="lg:col-span-6">
+        <motion.div variants={staggerItem} className="min-w-0 lg:col-span-6">
           <ChartCard title="Monthly spend" subtitle="Dots mark months a trip starts" empty={monthly.length === 0 && 'Spending will chart here once you log some.'}>
             <SpendTrend data={monthly} tripMonths={tripMonths} currency={base} />
           </ChartCard>
         </motion.div>
 
-        <motion.div variants={staggerItem} className="lg:col-span-6">
+        <motion.div variants={staggerItem} className="min-w-0 lg:col-span-6">
           <ChartCard title="All trips" subtitle="Click a column to sort" empty={filtered.length === 0 && 'No trips match these filters.'}>
             <TripBudgetTable rows={filtered} currency={base} />
           </ChartCard>
