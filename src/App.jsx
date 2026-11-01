@@ -8,14 +8,20 @@ import { ToastViewport } from './components/ui/Toast'
 import { useThemeSync } from './hooks/useTheme'
 import { useTripStore } from './store/useTripStore'
 
-const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Trips = lazy(() => import('./pages/Trips'))
-const TripDetail = lazy(() => import('./pages/TripDetail'))
-const CalendarPage = lazy(() => import('./pages/CalendarPage'))
-const BudgetPage = lazy(() => import('./pages/BudgetPage'))
-const Converter = lazy(() => import('./pages/Converter'))
-const Settings = lazy(() => import('./pages/Settings'))
-const NotFound = lazy(() => import('./pages/NotFound'))
+const pageImports = [
+  () => import('./pages/Dashboard'),
+  () => import('./pages/Trips'),
+  () => import('./pages/TripDetail'),
+  () => import('./pages/CalendarPage'),
+  () => import('./pages/BudgetPage'),
+  () => import('./pages/Converter'),
+  () => import('./pages/Settings'),
+  () => import('./pages/NotFound'),
+]
+const [Dashboard, Trips, TripDetail, CalendarPage, BudgetPage, Converter, Settings, NotFound] = pageImports.map((load) => lazy(load))
+
+// Fetch the remaining page chunks once the browser is idle so navigation never waits on the network.
+const preloadPages = () => pageImports.forEach((load) => load())
 
 function PageFallback() {
   return (
@@ -28,6 +34,10 @@ function PageFallback() {
 
 export default function App() {
   useThemeSync()
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((fn) => setTimeout(fn, 500))
+    idle(preloadPages)
+  }, [])
   const reducedMotion = useTripStore((s) => s.settings.reducedMotion)
   // CSS-only animations (skeleton shimmer) follow the Settings override too.
   useEffect(() => {

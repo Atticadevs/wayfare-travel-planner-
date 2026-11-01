@@ -3,9 +3,9 @@ export const spring = { type: 'spring', stiffness: 260, damping: 24 }
 export const duration = { fast: 0.2, base: 0.25, slow: 0.4 }
 
 export const fadeUp = {
-  initial: { opacity: 0, y: 8 },
-  animate: { opacity: 1, y: 0, transition: { duration: duration.base, ease } },
-  exit: { opacity: 0, y: -8, transition: { duration: duration.fast, ease } },
+  initial: { opacity: 0, y: 6 },
+  animate: { opacity: 1, y: 0, transition: { duration: duration.fast, ease } },
+  exit: { opacity: 0, transition: { duration: 0.1, ease } },
 }
 
 export const pageTransition = fadeUp
