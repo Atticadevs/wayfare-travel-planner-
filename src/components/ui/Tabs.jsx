@@ -15,7 +15,7 @@ export function Tabs({ tabs, value, onChange, label = 'Sections', className }) {
     document.getElementById(`${group}-${next.id}`)?.focus()
   }
   return (
-    <div role="tablist" aria-label={label} className={cn('flex gap-1 overflow-x-auto border-b border-border', className)}>
+    <div role="tablist" aria-label={label} className={cn('flex gap-1 overflow-x-auto overflow-y-hidden border-b border-border', className)}>
       {tabs.map((tab, i) => {
         const active = tab.id === value
         return (
@@ -29,7 +29,7 @@ export function Tabs({ tabs, value, onChange, label = 'Sections', className }) {
             onClick={() => onChange(tab.id)}
             onKeyDown={(e) => move(e, i)}
             className={cn(
-              'relative flex shrink-0 items-center gap-2 px-4 py-3 font-heading text-sm font-semibold transition-colors',
+              'relative flex shrink-0 items-center gap-2 px-4 py-3 font-heading text-sm font-semibold transition-colors focus-visible:ring-inset focus-visible:ring-offset-0',
               active ? 'text-primary' : 'text-muted hover:text-text',
             )}
           >
@@ -39,7 +39,7 @@ export function Tabs({ tabs, value, onChange, label = 'Sections', className }) {
               <motion.span
                 layoutId={`${group}-underline`}
                 transition={spring}
-                className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-primary"
+                className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-primary"
               />
             )}
           </button>
