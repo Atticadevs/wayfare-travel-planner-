@@ -1,4 +1,4 @@
-import { isAfter, isBefore, startOfDay } from 'date-fns'
+import { addMonths, isAfter, isBefore, isSameMonth, startOfDay } from 'date-fns'
 import { daysFromNow, parseDate } from '../lib/dates'
 import { bookingExpenseCategory } from '../lib/categories'
 import { convert } from '../lib/money'
@@ -101,6 +101,41 @@ export function getSpendRows(trip, bookings, expenses, rates) {
       }),
     )
   return rows
+}
+
+/**
+ * One value per month offset (0 = this month, -1 = last month ...), summing pick(trip, status)
+ * over trips that start in that month.
+ */
+export function getMonthlySeries(trips, offsets, now, pick) {
+  return offsets.map((offset) => {
+    const month = addMonths(now, offset)
+    return trips.reduce(
+      (sum, trip) => (isSameMonth(parseDate(trip.startDate), month) ? sum + pick(trip, getTripStatus(trip, now)) : sum),
+      0,
+    )
+  })
+}
+
+/** Itinerary completion for each month (Jan to Dec) of `year`. Skipped items don't count. */
+export function getMonthlyItineraryCompletion(items, year) {
+  return Array.from({ length: 12 }, (_, month) => {
+    const inMonth = items.filter((i) => {
+      const d = parseDate(i.date)
+      return d.getFullYear() === year && d.getMonth() === month && i.status !== 'skipped'
+    })
+    const done = inMonth.filter((i) => i.status === 'done').length
+    return { month, done, total: inMonth.length, pct: inMonth.length ? Math.round((done / inMonth.length) * 100) : 0 }
+  })
+}
+
+/** Everything happening on one ISO date: trips spanning it, bookings spanning it, itinerary items on it. */
+export function getDayAgenda(date, trips, bookings, itinerary) {
+  return {
+    trips: trips.filter((t) => t.startDate <= date && date <= t.endDate),
+    bookings: bookings.filter((b) => b.startDateTime.slice(0, 10) <= date && date <= b.endDateTime.slice(0, 10)),
+    items: itinerary.filter((i) => i.date === date).sort((a, b) => (a.time || '').localeCompare(b.time || '')),
+  }
 }
 
 /** Totals per expense category from getSpendRows output. */

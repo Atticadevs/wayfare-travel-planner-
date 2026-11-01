@@ -1,19 +1,10 @@
 import { motion } from 'framer-motion'
 import { MapPin, Pencil, Pin, Trash2 } from 'lucide-react'
+import { notePalette } from '../../lib/colors'
 import { listItem } from '../../lib/motion'
 import { cn } from '../../lib/cn'
 import { Button } from '../ui/Button'
 
-const palettes = [
-  'bg-amber-100 dark:bg-amber-400/15',
-  'bg-orange-100 dark:bg-orange-400/15',
-  'bg-rose-100 dark:bg-rose-400/15',
-  'bg-emerald-100 dark:bg-emerald-400/15',
-  'bg-sky-100 dark:bg-sky-400/15',
-]
-
-// Stable colour per note, derived from its id.
-const paletteFor = (id) => palettes[[...id].reduce((sum, c) => sum + c.charCodeAt(0), 0) % palettes.length]
 
 /** Sticky-note card. Plain text; line breaks are preserved. */
 export function NoteCard({ note, onTogglePin, onEdit, onDelete }) {
@@ -21,7 +12,7 @@ export function NoteCard({ note, onTogglePin, onEdit, onDelete }) {
     <motion.article
       {...listItem}
       aria-label={note.title || 'Note'}
-      className={cn('group mb-4 break-inside-avoid rounded-2xl p-4 shadow-card-themed', paletteFor(note.id))}
+      className={cn('group mb-4 break-inside-avoid rounded-2xl p-4 shadow-card-themed', notePalette(note.id))}
     >
       <div className="mb-2 flex items-start justify-between gap-2">
         <div className="min-w-0">

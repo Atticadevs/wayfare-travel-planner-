@@ -13,6 +13,7 @@ import { Select } from '../components/ui/Select'
 import { statusFilters, statusMeta } from '../lib/status'
 import { toast } from '../store/useToastStore'
 import { cn } from '../lib/cn'
+import { useAutoAdd } from '../hooks/useAutoAdd'
 import { countTripsByStatus, getTripStatus } from '../store/selectors'
 import { useTripStore } from '../store/useTripStore'
 
@@ -39,7 +40,8 @@ export default function Trips() {
   const trips = useTripStore((s) => s.trips)
   const { addTrip, updateTrip, removeTrip, restoreTrip, duplicateTrip, loadDemoData } = useTripStore.getState()
 
-  const filter = statusFilters.includes(params.get('status')) ? params.get('status') : 'all'
+  const param = params.get('status')
+  const filter = statusFilters.includes(param) || param === 'left' ? param : 'all'
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState('date')
   const [view, setView] = useState('grid')
@@ -53,13 +55,14 @@ export default function Trips() {
     const q = query.trim().toLowerCase()
     return trips
       .map((trip) => ({ trip, status: getTripStatus(trip, now) }))
-      .filter(({ trip, status }) => (filter === 'all' || status === filter)
+      .filter(({ trip, status }) => (filter === 'all' || status === filter || (filter === 'left' && (status === 'upcoming' || status === 'ongoing')))
         && (!q || `${trip.title} ${trip.destination} ${trip.country}`.toLowerCase().includes(q)))
       .sort(sorters[sort])
   }, [trips, filter, query, sort, now])
 
   const setFilter = (next) => setParams(next === 'all' ? {} : { status: next }, { replace: true })
   const openAdd = () => setDrawer({ open: true, trip: null })
+  useAutoAdd(openAdd)
   const closeDrawer = () => setDrawer((d) => ({ ...d, open: false }))
 
   const submitTrip = (data) => {
@@ -103,7 +106,7 @@ export default function Trips() {
     toast(`“${trip.title}” cancelled`, { actionLabel: 'Undo', onAction: () => updateTrip(trip.id, { status: trip.status }) })
   }
 
-  const chips = [{ id: 'all', label: 'All', count: counts.total }, ...statusFilters.map((id) => ({ id, label: statusMeta[id].label, count: counts[id] }))]
+  const chips = [{ id: 'all', label: 'All', count: counts.total }, ...(filter === 'left' ? [{ id: 'left', label: 'Left', count: counts.left }] : []), ...statusFilters.map((id) => ({ id, label: statusMeta[id].label, count: counts[id] }))]
 
   return (
     <PageShell

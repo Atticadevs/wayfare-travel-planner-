@@ -15,3 +15,21 @@ export function coverBackground(cover) {
   if (cover?.startsWith('data:')) return `center / cover no-repeat url(${cover})`
   return coverGradients[cover] ?? coverGradients.ocean
 }
+
+const notePalettes = [
+  'bg-amber-100 dark:bg-amber-400/15',
+  'bg-orange-100 dark:bg-orange-400/15',
+  'bg-rose-100 dark:bg-rose-400/15',
+  'bg-emerald-100 dark:bg-emerald-400/15',
+  'bg-sky-100 dark:bg-sky-400/15',
+]
+
+const hashId = (id) => [...id].reduce((sum, c) => sum + c.charCodeAt(0), 0)
+
+/** Stable sticky-note colour classes derived from a note id. */
+export const notePalette = (id) => notePalettes[hashId(id) % notePalettes.length]
+
+const tripColors = ['#6366f1', '#f97316', '#0ea5e9', '#10b981', '#ec4899', '#eab308', '#8b5cf6']
+
+/** Stable accent colour per trip (calendar bars, timelines). Readable on light and dark. */
+export const tripColor = (id) => tripColors[hashId(id) % tripColors.length]
