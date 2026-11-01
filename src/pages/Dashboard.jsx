@@ -93,7 +93,7 @@ export default function Dashboard() {
     return (
       <div className="mx-auto max-w-[1400px] px-4 pt-8 md:px-8">
         <h1 className="mb-6 text-2xl font-extrabold md:text-3xl">
-          Welcome, {settings.userName} <span aria-hidden="true">👋</span>
+          Welcome, {settings.userName}
         </h1>
         <div className="rounded-card bg-surface shadow-card-themed">
           <EmptyState title="Plan your first trip" message="Add a trip to see countdowns, budgets and progress here, or load sample trips to explore.">
