@@ -1,6 +1,6 @@
 import { SCHEMA_VERSION } from '../store/useTripStore'
 
-export const ENTITY_KEYS = ['trips', 'bookings', 'itinerary', 'expenses', 'packing', 'notes']
+const ENTITY_KEYS = ['trips', 'bookings', 'itinerary', 'expenses', 'packing', 'notes']
 
 /** Plain-data copy of everything worth exporting. */
 export function buildSnapshot(state) {

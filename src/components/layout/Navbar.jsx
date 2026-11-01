@@ -8,6 +8,7 @@ import { useTheme } from '../../hooks/useTheme'
 import { useTripStore } from '../../store/useTripStore'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
+import { Tooltip } from '../ui/Tooltip'
 
 export function Navbar() {
   const { isDark, toggle } = useTheme()
@@ -53,16 +54,20 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Button variant="ghost" icon onClick={toggle} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
-            {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
-          </Button>
-          <NavLink
-            to="/settings"
-            aria-label="Settings"
-            className="grid h-10 w-10 place-items-center rounded-control text-text transition-colors hover:bg-primary/10"
-          >
-            <Settings size={18} aria-hidden="true" />
-          </NavLink>
+          <Tooltip content={isDark ? 'Light mode' : 'Dark mode'}>
+            <Button variant="ghost" icon onClick={toggle} aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
+              {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+            </Button>
+          </Tooltip>
+          <Tooltip content="Settings">
+            <NavLink
+              to="/settings"
+              aria-label="Settings"
+              className="grid h-10 w-10 place-items-center rounded-control text-text transition-colors hover:bg-primary/10"
+            >
+              <Settings size={18} aria-hidden="true" />
+            </NavLink>
+          </Tooltip>
           <Avatar name={userName} className="ml-1" />
         </div>
       </div>

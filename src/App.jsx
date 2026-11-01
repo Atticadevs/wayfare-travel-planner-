@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { MotionConfig } from 'framer-motion'
 import { Route, Routes } from 'react-router-dom'
 import { AppLayout } from './components/layout/AppLayout'
@@ -29,6 +29,10 @@ function PageFallback() {
 export default function App() {
   useThemeSync()
   const reducedMotion = useTripStore((s) => s.settings.reducedMotion)
+  // CSS-only animations (skeleton shimmer) follow the Settings override too.
+  useEffect(() => {
+    document.documentElement.classList.toggle('reduce-motion', reducedMotion)
+  }, [reducedMotion])
 
   return (
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CircleAlert, Compass, LayoutDashboard, ListChecks, Luggage, StickyNote, Ticket, Wallet } from 'lucide-react'
 import { BudgetTab } from '../components/budget/BudgetTab'
@@ -14,6 +14,7 @@ import { Button } from '../components/ui/Button'
 import { ConfirmDialog } from '../components/ui/ConfirmDialog'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Tabs } from '../components/ui/Tabs'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useRates } from '../hooks/useRates'
 import { useTripData } from '../hooks/useTripData'
 import { fadeUp } from '../lib/motion'
@@ -32,7 +33,6 @@ const tabs = [
 
 export default function TripDetail() {
   const { id } = useParams()
-  const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const { trip, bookings, itinerary, expenses, packing, notes } = useTripData(id)
   const rates = useRates()
@@ -40,6 +40,8 @@ export default function TripDetail() {
   const [editing, setEditing] = useState(false)
   const [confirmCancel, setConfirmCancel] = useState(false)
   const [missedDismissed, setMissedDismissed] = useState(false)
+
+  useDocumentTitle(trip ? trip.title : 'Trip not found')
 
   const tab = tabs.some((t) => t.id === params.get('tab')) ? params.get('tab') : 'overview'
   const status = trip ? getTripStatus(trip) : null

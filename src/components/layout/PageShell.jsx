@@ -1,5 +1,8 @@
+import { useDocumentTitle } from '../../hooks/useDocumentTitle'
+
 /** Consistent page header + content width. Every page renders inside one. */
 export function PageShell({ title, subtitle, actions, children }) {
+  useDocumentTitle(title)
   return (
     <div className="mx-auto w-full max-w-[1400px] px-4 pb-24 pt-6 md:px-8 md:pb-12 md:pt-8">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

@@ -25,13 +25,11 @@ export function StatusRing({ counts }) {
   const [active, setActive] = useState(null)
   const total = counts.completed + counts.left + counts.missed + counts.cancelled
 
-  let offset = 0
-  const arcs = segments.map((s) => {
+  const arcs = segments.map((s, i) => {
     const share = total ? counts[s.key] / total : 0
+    const before = segments.slice(0, i).reduce((sum, p) => sum + (total ? counts[p.key] / total : 0), 0)
     const length = Math.max(0, share * CIRCUMFERENCE - (share > 0 && share < 1 ? GAP : 0))
-    const arc = { ...s, count: counts[s.key], share, length, start: offset }
-    offset += share * CIRCUMFERENCE
-    return arc
+    return { ...s, count: counts[s.key], share, length, start: before * CIRCUMFERENCE }
   })
 
   const focused = arcs.find((a) => a.key === active)

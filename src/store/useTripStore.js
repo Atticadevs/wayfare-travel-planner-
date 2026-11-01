@@ -7,7 +7,7 @@ import { STORAGE_KEY, storage } from '../services/storage'
 
 export const SCHEMA_VERSION = 1
 
-export const defaultSettings = {
+const defaultSettings = {
   theme: 'system',
   baseCurrency: 'USD',
   userName: 'Traveler',

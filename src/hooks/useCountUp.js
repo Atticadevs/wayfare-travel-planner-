@@ -1,31 +1,23 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { animate, useMotionValue } from 'framer-motion'
 import { useReducedMotion } from './useReducedMotion'
 
 /** Animates a number toward `target` (ease out). Starts from 0 on mount; jumps when motion is reduced. */
 export function useCountUp(target, { duration = 800 } = {}) {
   const reduced = useReducedMotion()
-  const current = useRef(reduced ? target : 0)
-  const [value, setValue] = useState(current.current)
+  const motionValue = useMotionValue(reduced ? target : 0)
+  const [value, setValue] = useState(motionValue.get())
+
+  useEffect(() => motionValue.on('change', setValue), [motionValue])
 
   useEffect(() => {
     if (reduced) {
-      current.current = target
-      setValue(target)
+      motionValue.jump(target)
       return undefined
     }
-    const origin = current.current
-    let start
-    let frame
-    const tick = (time) => {
-      start ??= time
-      const progress = Math.min(1, (time - start) / duration)
-      current.current = origin + (target - origin) * (1 - (1 - progress) ** 3)
-      setValue(current.current)
-      if (progress < 1) frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
-  }, [target, duration, reduced])
+    const controls = animate(motionValue, target, { duration: duration / 1000, ease: 'easeOut' })
+    return () => controls.stop()
+  }, [target, duration, reduced, motionValue])
 
   return value
 }

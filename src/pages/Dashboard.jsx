@@ -16,6 +16,7 @@ import { StatCard } from '../components/dashboard/StatCard'
 import { UpcomingTrips } from '../components/dashboard/UpcomingTrips'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useNow } from '../hooks/useNow'
 import { useRates } from '../hooks/useRates'
 import { formatMoney } from '../lib/format'
@@ -48,6 +49,7 @@ function Widget({ className, children }) {
 
 export default function Dashboard() {
   const navigate = useNavigate()
+  useDocumentTitle('Dashboard')
   const now = useNow(60000)
   const rates = useRates()
   const settings = useTripStore((s) => s.settings)

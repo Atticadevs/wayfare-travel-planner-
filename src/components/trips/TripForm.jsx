@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Check, ImagePlus, Plus } from 'lucide-react'
 import { currencies } from '../../data/rates'
 import { coverBackground, coverGradients } from '../../lib/colors'
 import { compressImage } from '../../lib/image'
 import { validateTrip } from '../../lib/validation'
+import { useFocusFirstError } from '../../hooks/useFormFocus'
 import { cn } from '../../lib/cn'
 import { useTripStore } from '../../store/useTripStore'
 import { Button } from '../ui/Button'
@@ -59,10 +60,7 @@ export function TripForm({ trip, onSubmit }) {
     onChange: (e) => set(field)(e.target.value),
   })
 
-  // Move focus to the first invalid field after a failed submit.
-  useEffect(() => {
-    if (attempt > 0) form.current?.querySelector('[aria-invalid="true"]')?.focus()
-  }, [attempt])
+  useFocusFirstError(form, attempt)
 
   const handleSubmit = (e) => {
     e.preventDefault()
