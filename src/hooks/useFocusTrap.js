@@ -14,6 +14,8 @@ export function useFocusTrap(ref, { onEscape } = {}) {
 
     const onKeyDown = (e) => {
       if (e.key === 'Escape') {
+        // An open popover (select, menu, date picker) owns Escape and closes itself first.
+        if (e.target.closest?.('[data-escape-owner]')) return
         e.stopPropagation()
         onEscape?.()
         return

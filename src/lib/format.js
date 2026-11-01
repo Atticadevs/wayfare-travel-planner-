@@ -26,3 +26,9 @@ export function formatDateRange(startIso, endIso) {
   const startText = formatDate(start, sameYear ? { day: 'numeric', month: 'short' } : undefined)
   return `${startText} – ${formatDate(end)}`
 }
+
+/** Flag emoji from an ISO 3166 alpha-2 code; empty string when the code is invalid. */
+export function flagEmoji(code) {
+  if (!/^[A-Za-z]{2}$/.test(code || '')) return ''
+  return [...code.toUpperCase()].map((c) => String.fromCodePoint(127397 + c.charCodeAt(0))).join('')
+}

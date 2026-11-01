@@ -38,7 +38,7 @@ export function Dropdown({ trigger, items, label }) {
   }
 
   return (
-    <div ref={root} className="relative">
+    <div ref={root} className="relative" data-escape-owner={open ? '' : undefined}>
       {trigger({
         'aria-haspopup': 'menu',
         'aria-expanded': open,

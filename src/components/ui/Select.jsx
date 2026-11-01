@@ -8,7 +8,7 @@ import { cn } from '../../lib/cn'
  * Searchable single-select. `options` is [{ value, label, hint? }].
  * Keyboard: Enter/Space/ArrowDown opens, arrows move, Enter selects, Esc closes.
  */
-export function Select({ label, options, value, onChange, searchable = true, className }) {
+export function Select({ label, ariaLabel, options, value, onChange, searchable = true, className }) {
   const id = useId()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -61,13 +61,17 @@ export function Select({ label, options, value, onChange, searchable = true, cla
       e.preventDefault()
       if (filtered[active]) choose(filtered[active])
     } else if (e.key === 'Escape') {
-      e.stopPropagation()
       close()
     }
   }
 
   return (
-    <div ref={root} className={cn('relative', className)}>
+    <div
+      ref={root}
+      className={cn('relative', className)}
+      data-escape-owner={open ? '' : undefined}
+      onKeyDown={open ? onKeyDown : undefined}
+    >
       {label && (
         <span id={`${id}-label`} className="mb-1.5 block text-xs font-semibold text-muted">
           {label}
@@ -77,6 +81,7 @@ export function Select({ label, options, value, onChange, searchable = true, cla
         ref={trigger}
         type="button"
         aria-haspopup="listbox"
+        aria-label={ariaLabel}
         aria-expanded={open}
         aria-labelledby={label ? `${id}-label` : undefined}
         onClick={() => (open ? close() : openList())}
@@ -95,7 +100,6 @@ export function Select({ label, options, value, onChange, searchable = true, cla
         {open && (
           <motion.div
             {...popover}
-            onKeyDown={onKeyDown}
             className="absolute left-0 right-0 z-30 mt-2 overflow-hidden rounded-control border border-border bg-surface shadow-lift"
           >
             {searchable && (
