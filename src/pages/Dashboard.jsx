@@ -174,14 +174,16 @@ export default function Dashboard() {
           <MiniCalendar trips={trips} bookings={bookings} itinerary={itinerary} />
         </Widget>
         <Widget className="md:col-span-6 xl:col-span-4">
-          <ConverterWidget presets={data.presets} />
-        </Widget>
-
-        <Widget className="md:col-span-6 xl:col-span-8">
           <ItineraryProgress itinerary={itinerary} now={now} />
         </Widget>
-        <Widget className="grid content-start gap-5 md:col-span-6 xl:col-span-4 xl:gap-6">
+
+        <Widget className="md:col-span-3 xl:col-span-4">
+          <ConverterWidget presets={data.presets} />
+        </Widget>
+        <Widget className="md:col-span-3 xl:col-span-4">
           <BudgetOverview planned={data.planned} spent={data.activeSpent} currency={base} tripCount={data.active.length} />
+        </Widget>
+        <Widget className="md:col-span-6 xl:col-span-4">
           <PackingSnapshot trip={next} items={nextPacking} />
         </Widget>
 
