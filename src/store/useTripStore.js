@@ -8,12 +8,20 @@ import { STORAGE_KEY, storage } from '../services/storage'
 export const SCHEMA_VERSION = 1
 
 const defaultSettings = {
-  theme: 'system',
+  theme: 'light',
   baseCurrency: 'USD',
   userName: 'Traveler',
   reducedMotion: false,
   rateOverrides: {},
 }
+
+/** Themes are 'light' or 'dark'. A legacy 'system' value is resolved once to the current OS preference. */
+const normalizeTheme = (theme) =>
+  theme === 'dark' || (theme === 'system' && typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches)
+    ? 'dark'
+    : 'light'
+
+const normalizeSettings = (settings) => ({ ...defaultSettings, ...settings, theme: normalizeTheme(settings?.theme) })
 
 const emptyEntities = { trips: [], bookings: [], itinerary: [], expenses: [], packing: [], notes: [] }
 const entityKeys = Object.keys(emptyEntities)
@@ -136,7 +144,7 @@ export const useTripStore = create(
       replaceAll: (snapshot) =>
         set({
           ...Object.fromEntries(entityKeys.map((k) => [k, snapshot[k] ?? []])),
-          settings: { ...defaultSettings, ...snapshot.settings },
+          settings: normalizeSettings(snapshot.settings),
         }),
 
       resetAll: () => set({ ...emptyEntities, settings: defaultSettings, recentConversions: [] }),
@@ -149,7 +157,7 @@ export const useTripStore = create(
       merge: (persisted, current) => ({
         ...current,
         ...persisted,
-        settings: { ...current.settings, ...persisted?.settings },
+        settings: normalizeSettings({ ...current.settings, ...persisted?.settings }),
       }),
       partialize: (s) => ({ schemaVersion: s.schemaVersion, settings: s.settings, recentConversions: s.recentConversions, ...Object.fromEntries(entityKeys.map((k) => [k, s[k]])) }),
     },

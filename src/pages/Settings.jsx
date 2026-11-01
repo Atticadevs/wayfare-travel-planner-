@@ -1,4 +1,4 @@
-import { Monitor, Moon, Sun } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 import { PageShell } from '../components/layout/PageShell'
 import { RateOverrides } from '../components/settings/RateOverrides'
 import { DataPanel } from '../components/settings/DataPanel'
@@ -13,7 +13,6 @@ import { useTripStore } from '../store/useTripStore'
 const themeOptions = [
   { value: 'light', label: 'Light', icon: Sun },
   { value: 'dark', label: 'Dark', icon: Moon },
-  { value: 'system', label: 'System', icon: Monitor },
 ]
 
 const currencyOptions = currencies.map((c) => ({ value: c.code, label: c.code, hint: c.name }))

@@ -12,7 +12,7 @@
       // Apply the saved theme before first paint to avoid a flash.
       // The key and shape mirror src/services/storage.js and the persisted store.
       ;(function () {
-        var theme = 'system'
+        var theme = 'light'
         try {
           var raw = localStorage.getItem('wayfare:v1')
           var saved = raw && JSON.parse(raw).state.settings.theme
