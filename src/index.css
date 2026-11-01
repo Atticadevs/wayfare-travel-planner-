@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 244 246 251;
+  --surface: 255 255 255;
+  --surface-2: 248 249 253;
+  --border: 231 234 243;
+  --text: 20 26 42;
+  --text-muted: 100 109 136;
+  --primary: 43 42 107;
+  --on-primary: 255 255 255;
+  --accent: 255 122 61;
+  --on-accent: 20 26 42;
+  --blue: 220 232 255;
+  --success: 34 160 107;
+  --warning: 245 165 36;
+  --danger: 229 72 77;
+  --info: 59 130 246;
+  --success-fg: 14 112 72;
+  --warning-fg: 133 77 0;
+  --danger-fg: 186 36 42;
+  --info-fg: 29 78 190;
+  --hero-gradient: linear-gradient(135deg, #e9e4ff 0%, #dce8ff 55%, #f1f5ff 100%);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 14 17 23;
+  --surface: 22 27 38;
+  --surface-2: 28 34 48;
+  --border: 39 47 63;
+  --text: 237 240 247;
+  --text-muted: 152 162 188;
+  --primary: 139 140 255;
+  --on-primary: 14 17 23;
+  --accent: 255 143 92;
+  --on-accent: 20 26 42;
+  --blue: 31 46 82;
+  --success-fg: 74 210 152;
+  --warning-fg: 250 192 90;
+  --danger-fg: 255 128 132;
+  --info-fg: 132 180 255;
+  --hero-gradient: linear-gradient(135deg, #25264f 0%, #1f2e52 55%, #1a2038 100%);
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-bg font-sans text-sm text-text antialiased;
+    font-variant-numeric: tabular-nums;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+  }
+}
+
+@layer utilities {
+  .shadow-card-themed {
+    @apply shadow-card dark:border dark:border-border dark:shadow-none;
+  }
+}
+
+/* Theme switch crossfade (class is added briefly by useTheme) */
+.theme-fade,
+.theme-fade *,
+.theme-fade *::before,
+.theme-fade *::after {
+  transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease, fill 250ms ease, stroke 250ms ease !important;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgb(var(--surface-2)) 25%, rgb(var(--border)) 50%, rgb(var(--surface-2)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}
