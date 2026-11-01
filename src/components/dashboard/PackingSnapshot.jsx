@@ -14,7 +14,7 @@ export function PackingSnapshot({ trip, items }) {
     >
       {trip && (
         <div className="flex flex-col items-center gap-3 text-center">
-          <ProgressRing value={progress.pct} size={110} stroke={11} tone={progress.pct === 100 ? 'success' : 'accent'} label="Packing progress" />
+          <ProgressRing value={progress.pct} size={88} stroke={10} tone={progress.pct === 100 ? 'success' : 'accent'} label="Packing progress" />
           <p className="text-sm font-semibold">
             {progress.packed} of {progress.total} packed
           </p>

@@ -10,7 +10,7 @@ export function BudgetOverview({ planned, spent, currency, tripCount }) {
       subtitle={`${tripCount} active trip${tripCount === 1 ? '' : 's'}`}
       empty={tripCount === 0 && 'Active trips will show their combined budget here.'}
     >
-      <BudgetGauge spent={spent} budget={planned} currency={currency} className="mx-auto w-full max-w-[14rem]" />
+      <BudgetGauge spent={spent} budget={planned} currency={currency} className="mx-auto w-full max-w-[12rem]" />
       <dl className="mt-3 grid grid-cols-2 gap-3 text-center">
         <div>
           <dt className="text-xs text-muted">Planned</dt>

@@ -20,8 +20,8 @@ export function MonthlyBars({ data, currentMonth, year }) {
     .join(', ') || 'no itinerary items yet'}.`
 
   return (
-    <div ref={ref} role="group" aria-label={summary}>
-      <div className="flex h-40 items-end gap-1.5 sm:gap-2">
+    <div ref={ref} role="group" aria-label={summary} className="flex flex-1 flex-col">
+      <div className="flex min-h-56 flex-1 items-end gap-1.5 sm:gap-2">
         {data.map((d) => {
           const isCurrent = d.month === currentMonth
           return (

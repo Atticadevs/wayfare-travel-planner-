@@ -18,7 +18,7 @@ export function ChartCard({ title, subtitle, action, loading = false, empty, cla
       ) : empty ? (
         <p className="grid flex-1 place-items-center rounded-control bg-surface-2 px-4 py-8 text-center text-sm text-muted">{empty}</p>
       ) : (
-        <div className="flex-1">{children}</div>
+        <div className="flex flex-1 flex-col">{children}</div>
       )}
     </Card>
   )

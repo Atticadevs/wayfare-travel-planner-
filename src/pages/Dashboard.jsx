@@ -177,13 +177,11 @@ export default function Dashboard() {
           <ConverterWidget presets={data.presets} />
         </Widget>
 
-        <Widget className="md:col-span-6 xl:col-span-6">
+        <Widget className="md:col-span-6 xl:col-span-8">
           <ItineraryProgress itinerary={itinerary} now={now} />
         </Widget>
-        <Widget className="md:col-span-3 xl:col-span-3">
+        <Widget className="grid content-start gap-5 md:col-span-6 xl:col-span-4 xl:gap-6">
           <BudgetOverview planned={data.planned} spent={data.activeSpent} currency={base} tripCount={data.active.length} />
-        </Widget>
-        <Widget className="md:col-span-3 xl:col-span-3">
           <PackingSnapshot trip={next} items={nextPacking} />
         </Widget>
 
