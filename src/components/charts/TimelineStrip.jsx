@@ -17,8 +17,13 @@ const zoomOptions = [
   { value: 'quarter', label: 'Quarter' },
   { value: 'month', label: 'Month' },
 ]
-const LANE = 34
-const HEADER = 26
+const LANE = 36
+const HEADER = 28
+const MIN_PILL = 26 // room for the status icon
+const LABEL_GAP = 8
+const CHAR_WIDTH = 6.8 // approximate width of the 12px semibold label text
+const LABEL_PADDING = 36 // icon + horizontal padding inside a pill that holds its own label
+const TAIL = 160 // extra scroll room so a label near the end of the year is never clipped
 
 const blockTones = {
   info: 'border-info/50 bg-info/20 text-info-fg',
@@ -28,16 +33,25 @@ const blockTones = {
   danger: 'border-danger/50 bg-danger/15 text-danger-fg',
 }
 
-/** Greedy lane packing so overlapping trips stack. */
-function assignLanes(blocks) {
+/**
+ * Lays trips out in pixels. A pill is sized by duration. When it is too narrow to hold its title,
+ * the title is drawn beside it, and that label counts towards the pill's extent so neighbours
+ * are pushed into another lane instead of overlapping.
+ */
+function layout(blocks, ppd) {
   const laneEnds = []
   return [...blocks]
     .sort((a, b) => a.from - b.from)
     .map((b) => {
-      const free = laneEnds.findIndex((end) => end <= b.from)
+      const left = b.from * ppd + 1
+      const width = Math.max((b.to - b.from) * ppd - 2, MIN_PILL)
+      const labelWidth = b.trip.title.length * CHAR_WIDTH
+      const outside = width < labelWidth + LABEL_PADDING
+      const extent = outside ? width + LABEL_GAP + labelWidth : width
+      const free = laneEnds.findIndex((end) => end + 6 <= left)
       const lane = free === -1 ? laneEnds.length : free
-      laneEnds[lane] = b.to
-      return { ...b, lane }
+      laneEnds[lane] = left + extent
+      return { ...b, left, width, outside, lane }
     })
 }
 
@@ -68,8 +82,8 @@ export function TimelineStrip({ trips, now }) {
         to: Math.min(totalDays, differenceInCalendarDays(parseDate(trip.endDate), yearStart) + 1),
       }))
       .filter((b) => b.to > 0 && b.from < totalDays)
-    return assignLanes(raw)
-  }, [trips, yearStart, totalDays])
+    return layout(raw, ppd)
+  }, [trips, yearStart, totalDays, ppd])
 
   const lanes = Math.max(1, ...blocks.map((b) => b.lane + 1))
   const todayOffset = differenceInCalendarDays(now, yearStart)
@@ -98,10 +112,10 @@ export function TimelineStrip({ trips, now }) {
       </div>
 
       <div ref={scroller} role="group" aria-label={summary} tabIndex={0} className="overflow-x-auto rounded-control border border-border bg-surface-2">
-        <div className="relative" style={{ width: totalDays * ppd, height: HEADER + lanes * LANE + 8 }}>
+        <div className="relative" style={{ width: totalDays * ppd + TAIL, height: HEADER + lanes * LANE + 10 }}>
           {months.map((m, i) => (
             <div key={m.label} className={cn('absolute inset-y-0 border-border', i > 0 && 'border-l')} style={{ left: m.left * ppd, width: m.days * ppd }}>
-              <span className="block px-2 pt-1 text-[11px] font-bold text-muted">{m.label}</span>
+              <span className="block px-2 pt-1.5 text-[11px] font-bold text-muted">{m.label}</span>
             </div>
           ))}
           {showToday && (
@@ -109,8 +123,9 @@ export function TimelineStrip({ trips, now }) {
               <span className="absolute left-1 top-1 rounded bg-accent px-1 text-[9px] font-bold text-on-accent">Today</span>
             </div>
           )}
-          {blocks.map(({ trip, status, from, to, lane }) => {
+          {blocks.map(({ trip, status, left, width, outside, lane }) => {
             const meta = statusMeta[status]
+            const range = formatDateRange(trip.startDate, trip.endDate)
             return (
               <motion.div
                 key={trip.id}
@@ -119,16 +134,20 @@ export function TimelineStrip({ trips, now }) {
                 viewport={chartViewport}
                 transition={{ duration: 0.6, ease }}
                 className="absolute"
-                style={{ originX: 0, left: from * ppd + 1, width: Math.max((to - from) * ppd - 2, 10), top: HEADER + lane * LANE, height: LANE - 6 }}
+                style={{ originX: 0, left, width, top: HEADER + lane * LANE, height: LANE - 8 }}
               >
                 <Link
                   to={`/trips/${trip.id}`}
-                  title={`${trip.title} · ${formatDateRange(trip.startDate, trip.endDate)} · ${meta.label}`}
-                  aria-label={`${trip.title}, ${meta.label}, ${formatDateRange(trip.startDate, trip.endDate)}`}
-                  className={cn('flex h-full items-center gap-1.5 overflow-hidden rounded-full border px-2.5 text-xs font-semibold', blockTones[meta.tone])}
+                  title={`${trip.title} · ${range} · ${meta.label}`}
+                  aria-label={`${trip.title}, ${meta.label}, ${range}`}
+                  className={cn('relative flex h-full items-center gap-1.5 rounded-full border px-2', outside ? 'justify-center' : 'overflow-hidden px-2.5', blockTones[meta.tone])}
                 >
-                  <meta.icon size={12} aria-hidden="true" className="shrink-0" />
-                  <span className="truncate">{trip.title}</span>
+                  <meta.icon size={13} aria-hidden="true" className="shrink-0" />
+                  {outside ? (
+                    <span className="absolute left-full ml-2 whitespace-nowrap text-xs font-semibold text-text">{trip.title}</span>
+                  ) : (
+                    <span className="truncate text-xs font-semibold">{trip.title}</span>
+                  )}
                 </Link>
               </motion.div>
             )
