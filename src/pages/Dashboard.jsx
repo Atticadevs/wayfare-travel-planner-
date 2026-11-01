@@ -167,13 +167,13 @@ export default function Dashboard() {
           </ChartCard>
         </Widget>
 
-        <Widget className="md:col-span-3 lg:col-span-4">
+        <Widget className="md:col-span-6 lg:col-span-12">
           <UpcomingTrips trips={data.active} itinerary={itinerary} />
         </Widget>
-        <Widget className="md:col-span-3 lg:col-span-4">
+        <Widget className="md:col-span-3 lg:col-span-6">
           <MiniCalendar trips={trips} bookings={bookings} itinerary={itinerary} />
         </Widget>
-        <Widget className="md:col-span-6 lg:col-span-4">
+        <Widget className="md:col-span-3 lg:col-span-6">
           <ItineraryProgress itinerary={itinerary} now={now} />
         </Widget>
 

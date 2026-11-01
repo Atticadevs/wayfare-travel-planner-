@@ -9,7 +9,7 @@ import { ChartCard } from '../charts/ChartCard'
 import { Chip } from '../ui/Chip'
 import { ProgressBar } from '../ui/ProgressBar'
 
-const MAX = 4
+const MAX = 6
 
 /** Compact list of ongoing and upcoming trips (soonest first). `trips` is [{ trip, status }]. */
 export function UpcomingTrips({ trips, itinerary }) {
@@ -34,7 +34,7 @@ export function UpcomingTrips({ trips, itinerary }) {
         </Link>
       }
     >
-      <ul className="space-y-3">
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {rows.map(({ trip, status, progress }) => {
           const start = parseDate(trip.startDate)
           return (
